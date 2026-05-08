@@ -21,12 +21,14 @@ target_include_directories(feature_tracking_engine
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_compile_options(feature_tracking_engine
-    PRIVATE
-        -Wall
-        -Wextra
-        -Wpedantic
-)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+    target_compile_options(feature_tracking_engine
+        PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+    )
+endif()
 
 add_executable(feature_tracking_demo
     app/main.cpp
@@ -36,3 +38,24 @@ target_link_libraries(feature_tracking_demo
     PRIVATE
         feature_tracking_engine
 )
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+    target_compile_options(feature_tracking_demo
+        PRIVATE
+            -Wall
+            -Wextra
+            -Wpedantic
+    )
+endif()
+
+include(CTest)
+
+if(BUILD_TESTING)
+    add_subdirectory(tests)
+
+    add_test(NAME demo_smoke COMMAND feature_tracking_demo)
+    set_tests_properties(demo_smoke
+        PROPERTIES
+            LABELS "smoke;fast;regression"
+    )
+endif()
