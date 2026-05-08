@@ -21,5 +21,6 @@ jobs:
       - name: Show Mull version
         run: mull-runner-19 --version
 
-      - name: Run matcher-focused mutation testing
-        run: ./scripts/run_mull_matcher.sh
+      - name: Run controlled matcher-focused mutation analysis
+        timeout-minutes: 5
+        run: ./scripts/run_mutation_matcher.sh

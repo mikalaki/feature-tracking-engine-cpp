@@ -1,0 +1,14 @@
+# Add this near the end of CMakeLists.txt
+
+enable_testing()
+
+add_executable(matcher_tests
+    tests/matcher_tests.cpp
+)
+
+target_link_libraries(matcher_tests
+    PRIVATE
+        feature_tracking_engine
+)
+
+add_test(NAME MatcherTests COMMAND matcher_tests)

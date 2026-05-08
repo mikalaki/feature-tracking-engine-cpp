@@ -51,7 +51,29 @@ endif()
 include(CTest)
 
 if(BUILD_TESTING)
-    add_subdirectory(tests)
+    add_executable(matcher_tests
+        tests/matcher_tests.cpp
+    )
+
+    target_link_libraries(matcher_tests
+        PRIVATE
+            feature_tracking_engine
+    )
+
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+        target_compile_options(matcher_tests
+            PRIVATE
+                -Wall
+                -Wextra
+                -Wpedantic
+        )
+    endif()
+
+    add_test(NAME MatcherTests COMMAND matcher_tests)
+    set_tests_properties(MatcherTests
+        PROPERTIES
+            LABELS "fast;matcher"
+    )
 
     add_test(NAME demo_smoke COMMAND feature_tracking_demo)
     set_tests_properties(demo_smoke
