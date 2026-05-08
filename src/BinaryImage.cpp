@@ -30,6 +30,7 @@ const BinaryImage::Grid& BinaryImage::data() const noexcept {
     return grid_;
 }
 
+// 
 void BinaryImage::validate(const Grid& grid) {
     if (grid.empty()) {
         throw std::invalid_argument("BinaryImage: grid must not be empty");
