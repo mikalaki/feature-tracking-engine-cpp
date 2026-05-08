@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 namespace ft::test {
-
+// 
 // Verifies that no features are detected when the image has only background pixels.
 TEST(GridDetectorDetection, ReturnsEmptyFrameForAllBackgroundPixels) {
     const BinaryImage image{
