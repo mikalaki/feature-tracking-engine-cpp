@@ -1,0 +1,25 @@
+name: Mutation Testing
+
+on:
+  workflow_dispatch:
+
+jobs:
+  mull:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Mull and LLVM tooling
+        run: |
+          curl -1sLf 'https://dl.cloudsmith.io/public/mull-project/mull-stable/setup.deb.sh' | sudo -E bash
+          sudo apt-get update
+          sudo apt-get install -y mull-19 clang-19 lld-19
+
+      - name: Show Mull version
+        run: mull-runner-19 --version
+
+      - name: Run matcher-focused mutation testing
+        run: ./scripts/run_mull_matcher.sh
