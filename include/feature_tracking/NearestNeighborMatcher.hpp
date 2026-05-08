@@ -52,6 +52,7 @@ struct MatchResult {
      * Returns 0.0 when no matches exist.
      */
     [[nodiscard]] double averageDistance() const noexcept;
+    
 };
 
 /**
