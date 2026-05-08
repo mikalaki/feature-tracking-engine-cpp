@@ -29,14 +29,8 @@ function(add_feature_tracking_test target_name source_file labels)
         )
     endif()
 
-    # The CI pipeline uses CTest labels for speed-based prioritization:
-    # - fast: cheap module-level checks run on every push.
-    # - full/regression: heavier end-to-end checks run on pull requests,
-    #   nightly/manual workflows, or when the full suite is explicitly requested.
-    #
-    # Registering one CTest test per GoogleTest executable keeps labels stable
-    # across CMake/GoogleTest versions while GoogleTest still reports the
-    # individual test cases inside each executable.
+    # One CTest test is registered per GoogleTest executable.
+    # GoogleTest still reports the individual test cases inside each executable.
     add_test(NAME ${target_name} COMMAND ${target_name})
     set_tests_properties(${target_name}
         PROPERTIES
@@ -47,25 +41,25 @@ endfunction()
 add_feature_tracking_test(
     binary_image_tests
     BinaryImageTests.cpp
-    "fast;unit"
+    "fast;full;unit"
 )
 
 add_feature_tracking_test(
     grid_detector_tests
     GridDetectorTests.cpp
-    "fast;unit"
+    "fast;full;unit"
 )
 
 add_feature_tracking_test(
     image_transform_tests
     ImageTransformTests.cpp
-    "fast;unit"
+    "fast;full;unit"
 )
 
 add_feature_tracking_test(
     nearest_neighbor_matcher_tests
     NearestNeighborMatcherTests.cpp
-    "fast;unit;bva"
+    "fast;full;unit;bva;matcher"
 )
 
 add_feature_tracking_test(

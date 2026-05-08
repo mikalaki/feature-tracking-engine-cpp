@@ -8,7 +8,7 @@ set -Eeuo pipefail
 SOURCE_FILE="${SOURCE_FILE:-src/NearestNeighborMatcher.cpp}"
 BUILD_DIR="${BUILD_DIR:-build-mutation}"
 TEST_TIMEOUT_SECONDS="${TEST_TIMEOUT_SECONDS:-20}"
-TEST_REGEX="${TEST_REGEX:-MatcherTests}"
+TEST_REGEX="${TEST_REGEX:-nearest_neighbor_matcher_tests}"
 
 if [[ ! -f "$SOURCE_FILE" ]]; then
   echo "ERROR: source file not found: $SOURCE_FILE" >&2

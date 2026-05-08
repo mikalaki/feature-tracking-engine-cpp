@@ -9,6 +9,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+function(enable_project_warnings target_name)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+        target_compile_options(${target_name}
+            PRIVATE
+                -Wall
+                -Wextra
+                -Wpedantic
+        )
+    endif()
+endfunction()
+
 add_library(feature_tracking_engine
     src/BinaryImage.cpp
     src/GridDetector.cpp
@@ -21,14 +32,7 @@ target_include_directories(feature_tracking_engine
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-    target_compile_options(feature_tracking_engine
-        PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
-    )
-endif()
+enable_project_warnings(feature_tracking_engine)
 
 add_executable(feature_tracking_demo
     app/main.cpp
@@ -39,45 +43,17 @@ target_link_libraries(feature_tracking_demo
         feature_tracking_engine
 )
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-    target_compile_options(feature_tracking_demo
-        PRIVATE
-            -Wall
-            -Wextra
-            -Wpedantic
-    )
-endif()
+enable_project_warnings(feature_tracking_demo)
 
 include(CTest)
 
 if(BUILD_TESTING)
-    add_executable(matcher_tests
-        tests/matcher_tests.cpp
-    )
-
-    target_link_libraries(matcher_tests
-        PRIVATE
-            feature_tracking_engine
-    )
-
-    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
-        target_compile_options(matcher_tests
-            PRIVATE
-                -Wall
-                -Wextra
-                -Wpedantic
-        )
-    endif()
-
-    add_test(NAME MatcherTests COMMAND matcher_tests)
-    set_tests_properties(MatcherTests
-        PROPERTIES
-            LABELS "fast;matcher"
-    )
+    add_subdirectory(tests)
 
     add_test(NAME demo_smoke COMMAND feature_tracking_demo)
+
     set_tests_properties(demo_smoke
         PROPERTIES
-            LABELS "fast;smoke"
+            LABELS "fast;full;smoke"
     )
 endif()
