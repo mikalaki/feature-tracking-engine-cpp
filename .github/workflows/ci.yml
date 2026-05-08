@@ -22,10 +22,6 @@ jobs:
         if: github.event_name == 'push'
         run: ctest --test-dir build --output-on-failure -L fast
 
-      - name: Run fast suite first on pull request
-        if: github.event_name == 'pull_request'
-        run: ctest --test-dir build --output-on-failure -L fast
-
       - name: Run full suite on pull request
         if: github.event_name == 'pull_request'
         run: ctest --test-dir build --output-on-failure
