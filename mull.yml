@@ -1,0 +1,19 @@
+# Mull configuration for the feature-tracking SUT.
+# Keep the initial mutator set small so mutation testing remains usable in a
+# student/CI setting. Expand only after the normal suite is stable.
+mutators:
+  - cxx_add_to_sub
+  - cxx_sub_to_add
+  - cxx_eq_to_ne
+  - cxx_ne_to_eq
+  - cxx_le_to_lt
+  - cxx_lt_to_le
+  - cxx_ge_to_gt
+  - cxx_gt_to_ge
+
+excludePaths:
+  - .*gtest.*
+  - .*gmock.*
+  - .*/_deps/.*
+  - .*/tests/.*
+  - .*/app/.*
