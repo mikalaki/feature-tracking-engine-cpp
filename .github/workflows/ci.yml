@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Configure CMake
         run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON
@@ -20,27 +18,14 @@ jobs:
       - name: Build
         run: cmake --build build --parallel
 
-      - name: Determine changed files
-        id: changes
-        shell: bash
-        run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            git fetch origin "${{ github.base_ref }}" --depth=1
-            git diff --name-only "origin/${{ github.base_ref }}"...HEAD > changed_files.txt
-          else
-            git diff --name-only HEAD~1 HEAD > changed_files.txt || git ls-files > changed_files.txt
-          fi
+      - name: Run fast suite on push
+        if: github.event_name == 'push'
+        run: ctest --test-dir build --output-on-failure -L fast
 
-          echo "Changed files:"
-          cat changed_files.txt
+      - name: Run fast suite first on pull request
+        if: github.event_name == 'pull_request'
+        run: ctest --test-dir build --output-on-failure -L fast
 
-          label_regex=$(./scripts/select_ctest_labels.sh $(cat changed_files.txt))
-          echo "Selected CTest label regex: ${label_regex}"
-          echo "label_regex=${label_regex}" >> "$GITHUB_OUTPUT"
-
-      - name: Run selected tests first
-        run: ctest --test-dir build --output-on-failure -L "${{ steps.changes.outputs.label_regex }}"
-
-      - name: Run full suite for pull requests
+      - name: Run full suite on pull request
         if: github.event_name == 'pull_request'
         run: ctest --test-dir build --output-on-failure

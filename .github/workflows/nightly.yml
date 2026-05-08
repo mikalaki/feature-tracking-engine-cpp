@@ -1,4 +1,4 @@
-name: Nightly Extended Tests
+name: Full Test Suite
 
 on:
   workflow_dispatch:

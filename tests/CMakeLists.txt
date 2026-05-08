@@ -9,8 +9,6 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-include(GoogleTest)
-
 function(add_feature_tracking_test target_name source_file labels)
     add_executable(${target_name}
         ${source_file}
@@ -31,34 +29,47 @@ function(add_feature_tracking_test target_name source_file labels)
         )
     endif()
 
-    gtest_discover_tests(${target_name}
-        DISCOVERY_TIMEOUT 30
+    # The CI pipeline uses CTest labels for speed-based prioritization:
+    # - fast: cheap module-level checks run on every push.
+    # - full/regression: heavier end-to-end checks run on pull requests,
+    #   nightly/manual workflows, or when the full suite is explicitly requested.
+    #
+    # Registering one CTest test per GoogleTest executable keeps labels stable
+    # across CMake/GoogleTest versions while GoogleTest still reports the
+    # individual test cases inside each executable.
+    add_test(NAME ${target_name} COMMAND ${target_name})
+    set_tests_properties(${target_name}
         PROPERTIES
             LABELS "${labels}"
     )
 endfunction()
 
-add_feature_tracking_test(binary_image_tests
+add_feature_tracking_test(
+    binary_image_tests
     BinaryImageTests.cpp
-    "unit;fast;binary_image"
+    "fast;unit"
 )
 
-add_feature_tracking_test(grid_detector_tests
+add_feature_tracking_test(
+    grid_detector_tests
     GridDetectorTests.cpp
-    "unit;fast;grid_detector"
+    "fast;unit"
 )
 
-add_feature_tracking_test(image_transform_tests
+add_feature_tracking_test(
+    image_transform_tests
     ImageTransformTests.cpp
-    "unit;fast;image_transform"
+    "fast;unit"
 )
 
-add_feature_tracking_test(nearest_neighbor_matcher_tests
+add_feature_tracking_test(
+    nearest_neighbor_matcher_tests
     NearestNeighborMatcherTests.cpp
-    "unit;fast;matcher;bva"
+    "fast;unit;bva"
 )
 
-add_feature_tracking_test(pipeline_regression_tests
+add_feature_tracking_test(
+    pipeline_regression_tests
     PipelineRegressionTests.cpp
-    "integration;regression;pipeline"
+    "full;integration;regression"
 )

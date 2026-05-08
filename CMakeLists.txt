@@ -56,6 +56,6 @@ if(BUILD_TESTING)
     add_test(NAME demo_smoke COMMAND feature_tracking_demo)
     set_tests_properties(demo_smoke
         PROPERTIES
-            LABELS "smoke;fast;regression"
+            LABELS "fast;smoke"
     )
 endif()
